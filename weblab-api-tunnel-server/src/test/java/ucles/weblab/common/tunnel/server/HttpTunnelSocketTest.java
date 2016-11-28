@@ -49,7 +49,7 @@ public class HttpTunnelSocketTest {
 
     @Test
     public void testUpEvent() throws Exception {
-        when(webSocketSession.getUri()).thenReturn(URI.create("/prefix/externalsystems/simon/httpTunnel"));
+        when(webSocketSession.getUri()).thenReturn(URI.create("/prefix/internalsystems/simon/httpTunnel"));
         doNothing().when(messageBus).publishEvent(messagePublish.capture());
 
         long earliestEventTime = System.currentTimeMillis();
@@ -68,7 +68,7 @@ public class HttpTunnelSocketTest {
 
     @Test
     public void testDownEvent() throws Exception {
-        when(webSocketSession.getUri()).thenReturn(URI.create("/prefix/externalsystems/aisling/httpTunnel"));
+        when(webSocketSession.getUri()).thenReturn(URI.create("/prefix/internalsystems/aisling/httpTunnel"));
         doNothing().when(messageBus).publishEvent(messagePublish.capture());
 
         long earliestEventTime = System.currentTimeMillis();
