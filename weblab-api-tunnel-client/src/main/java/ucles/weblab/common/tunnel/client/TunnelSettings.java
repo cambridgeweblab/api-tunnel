@@ -19,6 +19,7 @@ public class TunnelSettings {
     private boolean enabled;
     private URI baseUrl;
     private URI webSocketPath;
+    private long idleTimeout = 0L;
 
     @PostConstruct
     void validate() {

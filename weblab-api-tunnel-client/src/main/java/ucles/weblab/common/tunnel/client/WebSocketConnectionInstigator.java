@@ -38,7 +38,7 @@ public class WebSocketConnectionInstigator {
         }
         final URI webSocketPath = settings.getWebSocketPath();
         this.webSocketUrl = baseUrl.resolve(webSocketPath);
-        webSocketContainer.setDefaultMaxSessionIdleTimeout(0L);
+        webSocketContainer.setDefaultMaxSessionIdleTimeout(settings.getIdleTimeout());
     }
 
     @EventListener(ContextRefreshedEvent.class)
