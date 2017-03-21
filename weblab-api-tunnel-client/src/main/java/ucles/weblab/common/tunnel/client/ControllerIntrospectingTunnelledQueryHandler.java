@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import ucles.weblab.common.webapi.exception.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -82,20 +84,26 @@ public class ControllerIntrospectingTunnelledQueryHandler {
             response.statusCode(200);
             response.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE); // TODO: introspect @RequestMapping(produces)
             response.body(objectMapper.writeValueAsString(result));
+        } catch (ResourceNotFoundException e) {
+            buildResponse(response, e, HttpStatus.NOT_FOUND);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
-            response.statusCode(500);
-            response.contentType(MediaType.TEXT_PLAIN_VALUE);
-            ObjectNode objectNode = objectMapper.createObjectNode();
-            Throwable cause = (e instanceof InvocationTargetException) ? e.getCause() : e;
-            objectNode.put("message", cause.getClass().getName() + ": " + cause.getMessage());
-            try {
-                response.body(objectMapper.writeValueAsString(objectNode));
-            } catch (JsonProcessingException e1) {
-                response.body("{}");
-            }
+            buildResponse(response, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return response.build();
+    }
+
+    private void buildResponse(TunnelledQuery.Response.ResponseBuilder response, Exception e, HttpStatus statusCode) {
+        response.statusCode(statusCode.value());
+        response.contentType(MediaType.TEXT_PLAIN_VALUE);
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        Throwable cause = (e instanceof InvocationTargetException) ? e.getCause() : e;
+        objectNode.put("message", cause.getClass().getName() + ": " + cause.getMessage());
+        try {
+            response.body(objectMapper.writeValueAsString(objectNode));
+        } catch (JsonProcessingException e1) {
+            response.body("{}");
+        }
     }
 
     private Object[] evaluateHandlerMethodArguments(HandlerMethod method, Map<String, String> templateVariables, String body) {
