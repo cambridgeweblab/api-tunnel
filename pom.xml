@@ -31,6 +31,19 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>maven-s3-release-repo</id>
+            <name>AWS Release Repository</name>
+            <url>s3://mvnrepository.ucles.org.uk/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven-s3-snapshot-repo</id>
+            <name>AWS Snapshot Repository</name>
+            <url>s3://mvnrepository.ucles.org.uk/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>maven-s3-release-repo</id>
