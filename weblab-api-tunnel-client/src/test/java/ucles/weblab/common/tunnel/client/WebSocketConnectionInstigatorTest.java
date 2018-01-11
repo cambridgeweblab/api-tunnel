@@ -28,18 +28,17 @@ import static ucles.weblab.common.tunnel.client.WebSocketConnectionInstigator.AT
  */
 @RunWith(MockitoJUnitRunner.class)
 public class WebSocketConnectionInstigatorTest {
-    TunnelSettings tunnelSettings;
 
     @Mock
-    WebSocketContainer webSocketContainer;
+    private WebSocketContainer webSocketContainer;
 
     @Mock
-    Session initialSession;
+    private Session initialSession;
 
-    WebSocketConnectionInstigator webSocketConnectionInstigator;
+    private WebSocketConnectionInstigator webSocketConnectionInstigator;
 
     @Before
-    public void setUp() throws IOException, DeploymentException, URISyntaxException {
+    public void setUp() throws URISyntaxException {
         TunnelSettings tunnelSettings = new TunnelSettings();
 
         final URI baseUrl = URI.create("http://fish.jumper/safe/");

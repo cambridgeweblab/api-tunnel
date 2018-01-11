@@ -2,10 +2,8 @@ package ucles.weblab.common.tunnel.client;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -36,6 +34,7 @@ public class WebSocketTunnelConfiguration {
         return new WebSocketConnectionInstigator(settings, webSocketContainer);
     }
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     @ConditionalOnWebApplication
     public ControllerIntrospectingTunnelledQueryHandler tunnelledQueryHandler(

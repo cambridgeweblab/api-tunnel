@@ -56,7 +56,7 @@ public class WebSocketConnectionInstigator {
         }
     }
 
-    public void reconnect() throws IOException {
+    public void reconnect() {
         synchronized (this) {
             if (currentSession != null && currentSession.isOpen()) {
                 currentSession = null;

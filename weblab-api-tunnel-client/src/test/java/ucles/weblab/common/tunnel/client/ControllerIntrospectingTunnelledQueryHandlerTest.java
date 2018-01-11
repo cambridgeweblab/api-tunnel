@@ -47,17 +47,17 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerIntrospectingTunnelledQueryHandlerTest {
     @Mock
-    RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
     @Mock
-    ConversionService conversionService;
+    private ConversionService conversionService;
     @Mock
-    MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
+    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
     @Mock
-    HandlerMethod handlerMethod;
+    private HandlerMethod handlerMethod;
 
-    PathMatcher pathMatcher = new AntPathMatcher();
-    ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-    ControllerIntrospectingTunnelledQueryHandler queryHandler;
+    private PathMatcher pathMatcher = new AntPathMatcher();
+    private ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private ControllerIntrospectingTunnelledQueryHandler queryHandler;
 
     @Before
     public void setUp() {
@@ -82,9 +82,8 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
         when(requestMappingHandlerMapping.getHandlerMethods()).thenReturn(singletonMap(requestMappingInfo, handlerMethod));
         queryHandler.scanHandlerMethods();
 
-        final TunnelledQuery.TunnelledQueryBuilder query = TunnelledQuery.builder()
+        return TunnelledQuery.builder()
                 .url(URI.create(pattern.replace('{', '_').replace('}', '_')));
-        return query;
     }
 
     private Method setHandlerMethod(String methodName, Class<?>... parameterTypes) {
@@ -99,6 +98,7 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
         }
     }
 
+    @SuppressWarnings("MVCPathVariableInspection")
     static class TestController {
         static TestController instance = new TestController();
 

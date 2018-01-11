@@ -14,7 +14,6 @@ import lombok.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -47,7 +46,7 @@ public class TunnelledQuery {
         }
 
         @Override
-        protected MediaType _deserialize(String value, DeserializationContext ctxt) throws IOException {
+        protected MediaType _deserialize(String value, DeserializationContext ctxt) {
             return MediaType.valueOf(value);
         }
     }

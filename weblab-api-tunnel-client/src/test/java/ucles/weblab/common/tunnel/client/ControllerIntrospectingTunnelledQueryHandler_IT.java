@@ -1,22 +1,15 @@
 package ucles.weblab.common.tunnel.client;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
@@ -37,8 +31,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @since 08/09/2016
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebIntegrationTest(randomPort = true)
-@SpringApplicationConfiguration(ControllerIntrospectingTunnelledQueryHandler_IT.WebApp.class)
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT,
+        classes = ControllerIntrospectingTunnelledQueryHandler_IT.WebApp.class)
 @TestPropertySource(locations = "classpath:test.properties")
 public class ControllerIntrospectingTunnelledQueryHandler_IT {
     @SpringBootApplication

@@ -2,12 +2,9 @@ package ucles.weblab.common.tunnel.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import javax.websocket.ClientEndpoint;
-import javax.websocket.DeploymentException;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 
@@ -28,7 +25,7 @@ public class HttpTunnelSocketClient {
     }
 
     @OnClose
-    public void reestablishConnection() throws IOException, DeploymentException {
+    public void reestablishConnection() {
         log.info("Connection closed. Attempting to auto-reconnect...");
         WebSocketConnectionInstigator.instance.reconnect();
     }
