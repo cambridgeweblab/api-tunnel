@@ -6,10 +6,16 @@ env:
     # AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY
     - secure: djIyZ4gdE5yUJ2TwWYL3rCnMLuPwt8iEWGgWsGVpwupEwpH5Z0hBfALuPailX9SuBNUzCSQDXOGwEzDGE03I4rYEaBzcKx2xJOiDCwZ8rqEzZyV3QeV6zmYEHtgB3sa8gi+9CUCfZOwXDY4/3UiVgYMhEgwfBI5PaYjNWKDUVfpRmVac3HWHrRdyaSWie2NCGq4UkfYwwvPyt5BFW6a15Elpaq7og/e9rC9O99IIi93pw/B36XsAyf4sIi19t+tPyaFygdQRCw/wA7SnJxUs8zG5SFuCBdKFC+8zdwSksO+VBDUFdRoHpCv2nES6ytLPl36Rw7ZyMnhJSomlV189qQ==
 build:
+  cache: true
+  cache_dir_list:
+    - $HOME/.m2
+
   ci:
     - mkdir -p shippable/testresults
-    - mvn --batch-mode clean
-    - mvn --batch-mode -Pshippable deploy
+    # Can't do any building on a PR because the AWS variables are not available to fetch dependencies
+    - if [[ $IS_PULL_REQUEST != true ]]; then mvn --batch-mode clean; fi
+    - if [[ $BRANCH == "master" ]] && [[ $IS_PULL_REQUEST != true ]]; then mvn --batch-mode --update-snapshots -Pshippable deploy; fi
+    - if [[ $BRANCH != "master" ]] && [[ $IS_PULL_REQUEST != true ]]; then mvn --batch-mode --update-snapshots -Pshippable verify; fi
 
 integrations:
   notifications:
