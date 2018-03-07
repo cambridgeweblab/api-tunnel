@@ -48,12 +48,12 @@
         <repository>
             <id>maven-s3-release-repo</id>
             <name>AWS Release Repository</name>
-            <url>s3://mvnrepository.ucles.org.uk/releases</url>
+            <url>http://mvnrepository.ucles.org.uk.s3-website-eu-west-1.amazonaws.com/releases</url>
         </repository>
         <repository>
             <id>maven-s3-snapshot-repo</id>
             <name>AWS Snapshot Repository</name>
-            <url>s3://mvnrepository.ucles.org.uk/snapshots</url>
+            <url>http://mvnrepository.ucles.org.uk.s3-website-eu-west-1.amazonaws.com/snapshots</url>
             <snapshots/>
         </repository>
     </repositories>
