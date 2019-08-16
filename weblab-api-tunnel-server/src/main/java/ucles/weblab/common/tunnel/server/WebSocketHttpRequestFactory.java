@@ -73,6 +73,16 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
             this.method = method;
         }
 
+        @Override
+        public HttpMethod getMethod() {
+            return method;
+        }
+
+        @Override
+        public String getMethodValue() {
+            return method == null ? null : method.name();
+        }
+
         @JsonIgnore
         public URI getURI() {
             return url;
