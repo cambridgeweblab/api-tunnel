@@ -1,14 +1,16 @@
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+
 plugins {
     java
-    id("org.springframework.boot") version "2.7.18" apply false
-    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
+    id("org.springframework.boot") version "2.5.11" apply false
+    id("io.spring.dependency-management") version "1.0.15.RELEASE"
 }
 
 val isCiServer = System.getenv().containsKey("CI")
 
 allprojects {
     group = "ucles.weblab"
-    version = "2.0.0-SNAPSHOT"
+    version = "2.5.0-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -18,16 +20,28 @@ allprojects {
 
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "org.springframework.boot")
+    apply<DependencyManagementPlugin>()
     apply(plugin = "io.spring.dependency-management")
 
     java {
+        // Spring Boot 2.5.x supports Java 8
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+        }
+    }
+
     dependencies {
         // Common dependencies can be defined here
+        compileOnly("org.projectlombok:lombok")
+        testImplementation("junit:junit")
+        annotationProcessor("org.projectlombok:lombok")
+        testCompileOnly("org.projectlombok:lombok")
+        testAnnotationProcessor("org.projectlombok:lombok")
     }
 
     tasks.withType<Test> {
@@ -36,6 +50,16 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
+        options.compilerArgs.add("-parameters")
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom(configurations.annotationProcessor.get())
+        }
+        testCompileOnly {
+            extendsFrom(configurations.testAnnotationProcessor.get())
+        }
     }
 }
 
