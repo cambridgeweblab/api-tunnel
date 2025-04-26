@@ -24,9 +24,14 @@ subprojects {
     apply(plugin = "io.spring.dependency-management")
 
     java {
-        // Spring Boot 2.5.x supports Java 8
+        // Spring Boot 2.5.x supports Java 8-17
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        toolchain {
+            // Will need to install one locally e.g. via IntelliJ
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 
     dependencyManagement {
