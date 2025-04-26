@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation("ucles.weblab:weblab-common")
+    implementation("com.github.cambridgeweblab.common-java:weblab-common:2.3.0")
     implementation("org.springframework.security:spring-security-core")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework:spring-websocket")
