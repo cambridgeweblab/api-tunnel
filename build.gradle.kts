@@ -3,7 +3,7 @@ import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
 plugins {
     java
     id("org.springframework.boot") version "2.5.11" apply false
-    id("io.spring.dependency-management") version "1.0.15.RELEASE"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 val isCiServer = System.getenv().containsKey("CI")
