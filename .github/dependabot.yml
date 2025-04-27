@@ -1,0 +1,45 @@
+version: 2
+updates:
+  # Enable version updates for Gradle
+  - package-ecosystem: "gradle"
+    # Look for build.gradle.kts files in the root directory
+    directory: "/"
+    # Check for updates once a week (on Monday)
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    # Limit to 10 open PRs for version updates
+    open-pull-requests-limit: 10
+    # Group all minor and patch updates together
+    groups:
+      minor-and-patch-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Specify labels for pull requests
+    labels:
+      - "dependencies"
+      - "gradle"
+    # Allow up to 5 updates to be grouped together
+    pull-request-branch-name:
+      separator: "-"
+    # Ignore updates to specific dependencies
+    ignore:
+      # Ignore major updates to Spring Boot as they might require significant changes
+      - dependency-name: "org.springframework.boot:*"
+        update-types: ["version-update:semver-major"]
+      # Ignore major updates to Lombok as they might break annotation processing
+      - dependency-name: "org.projectlombok:lombok"
+        update-types: ["version-update:semver-major"]
+
+  # Also enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
