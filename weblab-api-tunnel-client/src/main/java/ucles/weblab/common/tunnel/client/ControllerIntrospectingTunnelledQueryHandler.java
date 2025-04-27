@@ -68,7 +68,8 @@ public class ControllerIntrospectingTunnelledQueryHandler {
                 .findFirst();
 
         if (!matchedPattern.isPresent()) {
-            log.warn("Received query on URL " + query.url + " which did not match any registered pattern.");
+          log.warn("Received query on URL {} which did not match any registered pattern.",
+              query.url);
             return null;
         }
 
@@ -109,7 +110,7 @@ public class ControllerIntrospectingTunnelledQueryHandler {
     private Object[] evaluateHandlerMethodArguments(HandlerMethod method, Map<String, String> templateVariables, String body) {
         MethodParameter[] parameters = method.getMethodParameters();
         Object[] arguments = new Object[parameters.length];
-        Iterator pathVariableValues = templateVariables.values().stream().map((s) -> {
+        Iterator<String> pathVariableValues = templateVariables.values().stream().map((s) -> {
             try {
                 return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException var2) {
@@ -127,7 +128,7 @@ public class ControllerIntrospectingTunnelledQueryHandler {
                         arguments[i] = this.conversionService.convert(pathVariableValues.next(), parameter.getParameterType());
                     }
                 } catch (NoSuchElementException var9) {
-                    log.error("No path variable specified for parameter " + i + " [" + parameter + "]");
+                  log.error("No path variable specified for parameter {} [{}]", i, parameter);
                     return null;
                 }
             } else if (parameter.getParameterAnnotation(RequestBody.class) != null) {
@@ -137,15 +138,18 @@ public class ControllerIntrospectingTunnelledQueryHandler {
                     try {
                         arguments[i] = objectMapper.readValue(body, parameter.getParameterType());
                     } catch (IOException e) {
-                        log.error("Could not read @RequestBody into parameter " + i + " [" + parameter + "] from body: " + body);
+                      log.error("Could not read @RequestBody into parameter {} [{}] from body: {}",
+                          i, parameter, body);
                         return null;
                     }
                 }
             } else if (parameter.getParameterAnnotation(AuthenticationPrincipal.class) == null && !Principal.class.isAssignableFrom(parameter.getParameterType()) && !Authentication.class.isAssignableFrom(parameter.getParameterType())) {
-                log.error("Controller method " + method.toString() + " parameter " + i + " [" + parameter + "] is not a @PathVariable or a @RequestBody");
+              log.error(
+                  "Controller method {} parameter {} [{}] is not a @PathVariable or a @RequestBody",
+                  method, i, parameter);
                 return null;
             } else {
-                log.debug("Skipping security parameter " + i + " [" + parameter + "]");
+              log.debug("Skipping security parameter {} [{}]", i, parameter);
             }
         }
 

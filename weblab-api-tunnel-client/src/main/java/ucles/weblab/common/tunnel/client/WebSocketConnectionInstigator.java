@@ -66,14 +66,14 @@ public class WebSocketConnectionInstigator {
     }
 
     private void establishConnection() {
-        log.info("Establishing web socket connection to: " + webSocketUrl);
+      log.info("Establishing web socket connection to: {}", webSocketUrl);
         int i = 0;
         do {
             try {
                 currentSession = webSocketContainer.connectToServer(HttpTunnelSocketClient.class, webSocketUrl);
             } catch (DeploymentException | IOException e) {
                 currentSession = null;
-                if (i >= ATTEMPTS_PER_TICK - 1) {
+                if (i == ATTEMPTS_PER_TICK - 1) {
                     log.warn("Failed to establish web socket connection. Retrying later...", e);
                 }
             }
