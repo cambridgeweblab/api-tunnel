@@ -42,6 +42,7 @@ subprojects {
 
     dependencies {
         // Common dependencies can be defined here
+        compileOnly("org.jspecify:jspecify:1.0.0")
         compileOnly("org.projectlombok:lombok")
         testImplementation("junit:junit")
         annotationProcessor("org.projectlombok:lombok")
@@ -67,6 +68,9 @@ subprojects {
         }
     }
 }
+
+// Override Spring Boot default versions
+extra["lombok.version"] = "1.18.38"
 
 ext {
     set("commonJavaVersion", "2.0.0-SNAPSHOT")
