@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
@@ -88,7 +88,6 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
 
     private Method setHandlerMethod(String methodName, Class<?>... parameterTypes) {
         when(handlerMethod.getBean()).thenReturn(TestController.instance);
-        when(handlerMethod.toString()).thenReturn(methodName);
         try {
             final Method method = TestController.class.getMethod(methodName, parameterTypes);
             when(handlerMethod.getMethod()).thenReturn(method);
