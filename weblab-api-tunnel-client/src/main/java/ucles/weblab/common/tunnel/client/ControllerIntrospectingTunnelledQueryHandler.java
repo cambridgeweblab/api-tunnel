@@ -17,8 +17,10 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.pattern.PathPattern;
 import ucles.weblab.common.webapi.exception.ResourceNotFoundException;
 
 import java.io.IOException;
@@ -54,9 +56,18 @@ public class ControllerIntrospectingTunnelledQueryHandler {
         final Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
             final HandlerMethod handlerMethod = entry.getValue();
-            final Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
-            for (String pattern : patterns) {
-                handlersByPattern.put(pattern, handlerMethod);
+            PatternsRequestCondition patternsCondition = entry.getKey().getPatternsCondition();
+            if (patternsCondition != null) {
+                final Set<String> patterns = patternsCondition.getPatterns();
+                for (String pattern : patterns) {
+                    handlersByPattern.put(pattern, handlerMethod);
+                }
+            } else {
+                assert entry.getKey().getPathPatternsCondition() != null; // see docs. Nonnull at this point
+                Set<PathPattern> patterns = entry.getKey().getPathPatternsCondition().getPatterns();
+                for (PathPattern pattern : patterns) {
+                    handlersByPattern.put(pattern.getPatternString(), handlerMethod);
+                }
             }
         }
     }
