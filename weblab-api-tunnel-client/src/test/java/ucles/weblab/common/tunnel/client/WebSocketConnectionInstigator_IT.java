@@ -57,7 +57,7 @@ public class WebSocketConnectionInstigator_IT {
     @Test
     public void testContextRefreshEstablishesConnection() throws IOException, DeploymentException {
         // Called once during context initialisation
-        verify(mockWebSocketContainer).connectToServer(HttpTunnelSocketClient.class, URI.create("ws://foo.bar/wibble"));
+        verify(mockWebSocketContainer).connectToServer(HttpTunnelSocketClient.class, URI.create("ws://localhost/wibble"));
     }
 
 }
