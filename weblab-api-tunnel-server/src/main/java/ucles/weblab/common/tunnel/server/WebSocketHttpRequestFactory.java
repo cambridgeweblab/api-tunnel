@@ -9,6 +9,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +44,7 @@ import java.util.concurrent.TimeoutException;
  * @since 22/08/2016
  */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@NullMarked
 class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
     static int TIMEOUT_SECS = 10; // Package-protected so tests can manipulate it.
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -49,7 +53,7 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
     private final WebSocketResponseHandler webSocketResponseHandler;
 
     @Override
-    public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
+    public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) {
         return new WebSocketHttpRequest(uri, httpMethod);
     }
 
@@ -57,25 +61,25 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
         @JsonProperty("correlationId")
         @JsonSerialize(using = ToStringSerializer.class)
         private UUID correlationId = UUID.randomUUID();
+
         @JsonSerialize(using = ToStringSerializer.class)
         @Getter
         @Setter
+        @Nullable
         private HttpMethod method;
+
         @JsonSerialize(using = ToStringSerializer.class)
         private URI url;
+
         @JsonIgnore
         private final HttpHeaders requestHeaders = new HttpHeaders();
+
         @JsonIgnore
         private final ByteArrayOutputStream body = new ByteArrayOutputStream(1024);
 
         WebSocketHttpRequest(URI uri, HttpMethod method) {
             this.url = URI.create(uri.getPath());
             this.method = method;
-        }
-
-        @Override
-        public HttpMethod getMethod() {
-            return method;
         }
 
         @Override
@@ -99,6 +103,7 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
         }
 
         @JsonProperty
+        @Nullable
         public String getContentType() {
             return requestHeaders.getContentType() != null? requestHeaders.getContentType().toString() : null;
         }
@@ -144,12 +149,12 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
         }
 
         @Override
-        public int getRawStatusCode() throws IOException {
+        public int getRawStatusCode() {
             return statusCode.value();
         }
 
         @Override
-        public String getStatusText() throws IOException {
+        public String getStatusText() {
             return statusCode.getReasonPhrase();
         }
 
@@ -159,7 +164,7 @@ class WebSocketHttpRequestFactory implements ClientHttpRequestFactory {
         }
 
         @Override
-        public InputStream getBody() throws IOException {
+        public InputStream getBody() {
             return new ByteArrayInputStream(new byte[0]);
         }
 
