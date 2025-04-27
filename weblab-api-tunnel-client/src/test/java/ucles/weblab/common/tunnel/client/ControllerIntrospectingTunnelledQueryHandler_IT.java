@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -37,10 +38,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @TestPropertySource(locations = "classpath:test.properties")
 public class ControllerIntrospectingTunnelledQueryHandler_IT {
     @SpringBootApplication
-    @Import(WebSocketTunnelConfiguration.class)
+    @Import({WebSocketTunnelConfiguration.class, Config.class})
     static class WebApp {
     }
 
+    @Configuration
     static class Config {
         @Bean
         public TestController testController() {
