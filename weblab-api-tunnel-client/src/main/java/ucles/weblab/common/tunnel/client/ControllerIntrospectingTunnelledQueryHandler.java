@@ -16,12 +16,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
-import ucles.weblab.common.webapi.exception.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -96,10 +97,14 @@ public class ControllerIntrospectingTunnelledQueryHandler {
             response.statusCode(200);
             response.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE); // TODO: introspect @RequestMapping(produces)
             response.body(objectMapper.writeValueAsString(result));
-        } catch (ResourceNotFoundException e) {
-            buildResponse(response, e, HttpStatus.NOT_FOUND);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
-            buildResponse(response, e, HttpStatus.INTERNAL_SERVER_ERROR);
+            Throwable cause = (e instanceof InvocationTargetException) ? e.getCause() : e;
+            ResponseStatus responseStatus = AnnotationUtils.findAnnotation(cause.getClass(), ResponseStatus.class);
+            if (responseStatus != null) {
+                buildResponse(response, e, responseStatus.code());
+            } else {
+                buildResponse(response, e, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         return response.build();

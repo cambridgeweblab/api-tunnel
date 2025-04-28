@@ -18,6 +18,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -97,6 +98,20 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    static class CustomNotFoundException extends RuntimeException {
+        public CustomNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    static class CustomBadRequestException extends RuntimeException {
+        public CustomBadRequestException(String message) {
+            super(message);
+        }
+    }
+
     @SuppressWarnings("MVCPathVariableInspection")
     static class TestController {
         static TestController instance = new TestController();
@@ -122,6 +137,14 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
 
         public void throwsException() {
             throw new IllegalArgumentException("illegal, and probably immoral");
+        }
+
+        public void throwsNotFoundWithAnnotation() {
+            throw new CustomNotFoundException("resource not found");
+        }
+
+        public void throwsBadRequestWithAnnotation() {
+            throw new CustomBadRequestException("bad request data");
         }
 
         public Map<String, String> bodyText(@RequestBody String pong) {
@@ -268,5 +291,22 @@ public class ControllerIntrospectingTunnelledQueryHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode);
     }
 
+    @Test
+    public void testQueryHandlerThrowsExceptionWithNotFoundAnnotation() {
+        TunnelledQuery query = registerHandlerMethod("throwsNotFoundWithAnnotation");
+        when(handlerMethod.getMethodParameters()).thenReturn(new MethodParameter[0]);
+        final TunnelledQuery.Response response = queryHandler.handleQuery(query);
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode);
+        assertEquals("{\"message\":\"ucles.weblab.common.tunnel.client.ControllerIntrospectingTunnelledQueryHandlerTest$CustomNotFoundException: resource not found\"}", response.body);
+    }
+
+    @Test
+    public void testQueryHandlerThrowsExceptionWithBadRequestAnnotation() {
+        TunnelledQuery query = registerHandlerMethod("throwsBadRequestWithAnnotation");
+        when(handlerMethod.getMethodParameters()).thenReturn(new MethodParameter[0]);
+        final TunnelledQuery.Response response = queryHandler.handleQuery(query);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode);
+        assertEquals("{\"message\":\"ucles.weblab.common.tunnel.client.ControllerIntrospectingTunnelledQueryHandlerTest$CustomBadRequestException: bad request data\"}", response.body);
+    }
 
 }
